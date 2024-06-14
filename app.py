@@ -55,9 +55,10 @@ class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.showNotFoundMessage()
         count = 0
         try:
+            bw_method = not self.radio_color.isChecked()
             for image_name in images:
                 with Image(filename=image_name) as img:
-                    img.negate(True)
+                    img.negate(bw_method)
                     img.save(filename=os.path.join(self.dest_dir, image_name))
                 count += 1
                 self.progressBar.setValue(round(count * 100 / len_images))
