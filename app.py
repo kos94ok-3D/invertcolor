@@ -3,10 +3,13 @@
 import os
 import re
 
+from PIL import Image
+import PIL.ImageOps
+
 from PyQt5 import QtWidgets
-from wand.image import Image
 
 from interface import Ui_MainWindow
+
 
 IMAGE_TYPES = (
     # 'bmp',
@@ -55,15 +58,21 @@ class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.showNotFoundMessage()
         count = 0
         try:
-            bw_method = not self.radio_color.isChecked()
             for image_name in images:
-                with Image(filename=image_name) as img:
-                    img.negate(bw_method)
-                    img.save(filename=os.path.join(self.dest_dir, image_name))
+                image = Image.open(image_name)
+                if image.mode == "RGBA":
+                    img_a = image.getchannel("A")
+                    img_rgb = image.convert("RGB")
+                    inverted_image = PIL.ImageOps.invert(img_rgb)
+                    inverted_image.putalpha(img_a)
+                else:
+                    inverted_image = PIL.ImageOps.invert(image)
+                inverted_image.save(fp=os.path.join(self.dest_dir, image_name))
                 count += 1
                 self.progressBar.setValue(round(count * 100 / len_images))
             self.showDoneMessage(count)
-        except:
+        except Exception as e:
+            print(e)
             self.showFailMessage()
         sys.exit()
 
