@@ -100,8 +100,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.source_dir_btn.setText(_translate("MainWindow", "Папка з фото для обробки"))
-        self.dest_dir_btn.setText(_translate("MainWindow", "Папка з результатом"))
+        self.source_dir_btn.setText(_translate("MainWindow", "Обрати файли для обробки"))
+        self.dest_dir_btn.setText(_translate("MainWindow", "Папка для збереження результату"))
         self.run_btn.setText(_translate("MainWindow", "Запустити"))
 
 
