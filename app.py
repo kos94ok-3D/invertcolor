@@ -12,7 +12,7 @@ from interface import Ui_MainWindow
 
 
 IMAGE_TYPES = (
-    # 'bmp',
+    'bmp',
     'jpg',
     'png',
 )
@@ -60,6 +60,8 @@ class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             for image_name in images:
                 image = Image.open(image_name)
+                if image.mode == "P":
+                    image = image.convert("RGB")
                 if image.mode == "RGBA":
                     img_a = image.getchannel("A")
                     img_rgb = image.convert("RGB")
