@@ -31,13 +31,20 @@ class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.source_dir_btn.clicked.connect(self.select_source_dir)
         self.dest_dir_btn.clicked.connect(self.select_dest_dir)
-        self.run_btn.clicked.connect(self.invert_color)
+        self.run_btn.clicked.connect(self.run_editor)
 
     def select_source_dir(self):
         selected_file_list = QtWidgets.QFileDialog.getOpenFileNames(self, "Обрати файли для обробки", filter=SUPPORTED_TYPES)[0]
         self.selected_file_list = selected_file_list
         self.source_dir_label.setText("Обрано файлій %d для обробки." % len(selected_file_list))
-        if selected_file_list and not self.dest_dir:
+        if not selected_file_list:
+            return
+        image = Image.open(selected_file_list[0])
+        self.spinBox_crop_left.setMaximum(image.size[0])
+        self.spinBox_crop_right.setMaximum(image.size[0])
+        self.spinBox_crop_top.setMaximum(image.size[1])
+        self.spinBox_crop_bottom.setMaximum(image.size[1])
+        if not self.dest_dir:
             self.dest_dir = os.path.dirname(selected_file_list[0])
             self.dest_dir_label.setText(self.dest_dir)
 
@@ -47,7 +54,7 @@ class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.dest_dir = dir
             self.dest_dir_label.setText(dir)
 
-    def invert_color(self):
+    def run_editor(self):
         len_images = len(self.selected_file_list)
         if not len_images:
             self.showNotFoundMessage()
@@ -58,16 +65,29 @@ class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
         try:
             for image_path in self.selected_file_list:
                 image = Image.open(image_path)
-                if image.mode == "P":
-                    image = image.convert("RGB")
-                if image.mode == "RGBA":
-                    img_a = image.getchannel("A")
-                    img_rgb = image.convert("RGB")
-                    inverted_image = PIL.ImageOps.invert(img_rgb)
-                    inverted_image.putalpha(img_a)
-                else:
-                    inverted_image = PIL.ImageOps.invert(image)
-                inverted_image.save(fp=os.path.join(self.dest_dir, os.path.basename(image_path)))
+                edited = False
+                if self.checkBox_crop.isChecked():
+                    # CROP
+                    image_size = image.size
+                    left_crop = self.spinBox_crop_left.value()
+                    top_crop = self.spinBox_crop_top.value()
+                    right_crop = image_size[0] - self.spinBox_crop_right.value()
+                    bottom_crop = image_size[1] - self.spinBox_crop_bottom.value()
+                    image = image.crop((left_crop, top_crop, right_crop, bottom_crop))
+                    edited = True
+                if self.checkBox_invert.isChecked():
+                    if image.mode == "P":
+                        image = image.convert("RGB")
+                    if image.mode == "RGBA":
+                        img_a = image.getchannel("A")
+                        img_rgb = image.convert("RGB")
+                        image = PIL.ImageOps.invert(img_rgb)
+                        image.putalpha(img_a)
+                    else:
+                        image = PIL.ImageOps.invert(image)
+                    edited = True
+                if edited:
+                    image.save(fp=os.path.join(self.dest_dir, os.path.basename(image_path)))
                 count += 1
                 self.progressBar.setValue(round(count * 100 / len_images))
             self.showDoneMessage(count)
