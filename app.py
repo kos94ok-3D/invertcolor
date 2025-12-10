@@ -5,7 +5,7 @@ import os
 from PIL import Image
 import PIL.ImageOps
 
-from PyQt5 import QtWidgets
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 
 from interface import Ui_MainWindow
 
@@ -19,7 +19,7 @@ IMAGE_TYPES = (
 SUPPORTED_TYPES = "Images (" + " ".join(["*." + f_type for f_type in IMAGE_TYPES ]) + ")"
 
 
-class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
+class InvertColorApp(QMainWindow, Ui_MainWindow):
 
     def __init__(self):
         super().__init__()
@@ -34,7 +34,7 @@ class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.run_btn.clicked.connect(self.run_editor)
 
     def select_source_dir(self):
-        selected_file_list = QtWidgets.QFileDialog.getOpenFileNames(self, "Обрати файли для обробки", filter=SUPPORTED_TYPES)[0]
+        selected_file_list = QFileDialog.getOpenFileNames(self, "Обрати файли для обробки", filter=SUPPORTED_TYPES)[0]
         self.selected_file_list = selected_file_list
         self.source_dir_label.setText("Обрано файлій %d для обробки." % len(selected_file_list))
         if not selected_file_list:
@@ -49,7 +49,7 @@ class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.dest_dir_label.setText(self.dest_dir)
 
     def select_dest_dir(self):
-        dir = QtWidgets.QFileDialog.getExistingDirectory(self, "Папка для збереження результату")
+        dir = QFileDialog.getExistingDirectory(self, "Папка для збереження результату")
         if dir:
             self.dest_dir = dir
             self.dest_dir_label.setText(dir)
@@ -97,32 +97,29 @@ class InvertColorApp(QtWidgets.QMainWindow, Ui_MainWindow):
         sys.exit()
 
     def showFailMessage(self):
-        QtWidgets.QMessageBox.warning(
+        QMessageBox.warning(
             self,
             "Попередження!!!", "Під час виконання програми щось пішло не так. \nЗверніться до розробника",
-            QtWidgets.QMessageBox.Ok,
         )
 
     def showDoneMessage(self, done_count):
-        QtWidgets.QMessageBox.information(
+        QMessageBox.information(
             self,
             "Повідомлення", "Програма завершила свою роботу. \nБуло опрацьовано %d файлів." % done_count,
-            QtWidgets.QMessageBox.Ok,
         )
 
     def showNotFoundMessage(self):
-        QtWidgets.QMessageBox.warning(
+        QMessageBox.warning(
             self,
             "Попередження!!!", "Оберіть файли для обробки, які підтримує програма. \nТипи файлів, які підтримуються: %s" % ', '.join([
                 f_type for f_type in IMAGE_TYPES]
             ),
-            QtWidgets.QMessageBox.Ok,
         )
 
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     MainWindow = InvertColorApp()
     MainWindow.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
