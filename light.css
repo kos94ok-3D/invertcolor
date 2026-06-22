@@ -1,0 +1,76 @@
+QWidget {
+    background-color: #F3F3F3;
+    color: #000000;
+}
+QLabel {
+    color: #000000;
+}
+QListWidget {
+    background-color: #FFFFFF;
+    border: 1px solid #B0B0B0;
+    color: #000000;
+}
+QPushButton {
+    background-color: #E1E1E1;
+    border: 1px solid #A0A0A0; /* Контур кнопок чудово видно */
+    color: #000000; /* Чорний текст чудово видно */
+    border-radius: 4px;
+    padding: 6px 15px;
+}
+QPushButton:hover {
+    background-color: #D5D5D5;
+}
+QPushButton:disabled {
+    background-color: #EAEAEA;
+    color: #888888;
+    border: 1px solid #CCCCCC;
+}
+QPushButton:checked {
+    background-color: #0078D7;
+    color: #FFFFFF;
+}
+QProgressBar {
+    border: 1px solid #A0A0A0;
+    background-color: #FFFFFF;
+    color: #000000;
+    border-radius: 4px;
+    text-align: center;
+}
+QProgressBar::chunk {
+    background-color: #0078D7;
+}
+#effects_panel {
+    background-color: #EAEAEA;
+    border: 1px solid #B0B0B0;
+    border-radius: 6px;
+}
+QRadioButton {
+    background-color: #E1E1E1;
+    color: #000000;
+    border: 1px solid #A0A0A0;
+    padding: 5px 12px;
+    font-size: 14px;
+}
+QRadioButton::indicator {
+    width: 0px;
+    height: 0px;
+}
+QRadioButton:hover {
+    background-color: #D5D5D5;
+}
+QRadioButton:checked {
+    background-color: #0078D7;
+    border-color: #0078D7;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+/* Склеюємо кнопки в один сегмент */
+QRadioButton:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-right: none;
+}
+QRadioButton:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
